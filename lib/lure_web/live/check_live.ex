@@ -86,33 +86,48 @@ defmodule LureWeb.CheckLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="wrap">
-      <header class="top">
-        <a class="mark" href="/"><b>LURE</b><span>Job ad inspection</span></a>
-        <nav>
-          <a href="#how">How it decides</a>
-          <a href="https://github.com/evannwilsonn/lure">Source</a>
-          <button id="theme" class="theme" type="button" phx-click={JS.dispatch("phx:toggle-theme")}>Light / dark</button>
-        </nav>
-      </header>
-
-      <.microprint />
-
-      <section class="intro">
-        <.waves class="band" />
-        <div>
-          <p class="form-no">Form LU-13 · Employment advertisement inspection</p>
-          <h1>Is this job ad real?</h1>
-          <p>
-            Paste an ad and Lure scores it with a model trained on 15,872 real postings, 713 of them scams caught by a job board's staff.
-            It marks the words that moved the score and the red flags worth checking before you send anything.
-          </p>
+    <section class="plate">
+      <div class="shore">
+        <span class="fishline" aria-hidden="true"></span>
+        <div class="wrap">
+          <header class="top">
+            <a class="mark" href="/" aria-label="Lure, home"><b>LURE</b></a>
+            <nav>
+              <a href="#how">How it decides</a>
+              <a href="https://github.com/evannwilsonn/lure">Source</a>
+              <button
+                id="theme"
+                class="theme"
+                type="button"
+                phx-click={JS.dispatch("phx:toggle-theme")}
+              >Light / dark</button>
+            </nav>
+          </header>
+          <p class="caption">Plate I · A reader of job advertisements</p>
+          <div class="intro">
+            <h1>Is this job ad real?</h1>
+            <p>
+              Paste an ad and Lure scores it with a model trained on 15,872 real postings, 713 of them scams caught by a job board's staff.
+              It marks the words that moved the score and the red flags worth checking before you send anything.
+            </p>
+          </div>
         </div>
-        <.rosette class="guilloche" />
-      </section>
+      </div>
+      <div class="water">
+        <.water class="hatch" />
+        <.rig class="rig" />
+        <.ruler class="ruler" />
+        <div class="wrap">
+          <p class="fig">Fig. 1 — The bait is always the offer.</p>
+          <p class="fig-sub">Scam scoring in Elixir · Nx · Phoenix LiveView</p>
+        </div>
+      </div>
+    </section>
 
+    <div class="wrap">
       <div class="desk">
         <section class="panel" aria-labelledby="h-paste">
+          <p class="slip-no">Slip A</p>
           <h2 id="h-paste">The ad</h2>
           <p class="hint">
             Copy everything: the title, the description, and how they want you to apply.
@@ -149,13 +164,10 @@ defmodule LureWeb.CheckLive do
         </section>
 
         <section class="panel" aria-labelledby="h-result" aria-live="polite">
+          <p class="slip-no">Slip B</p>
           <h2 id="h-result">The verdict</h2>
           <div :if={is_nil(@result)} class="empty">
-            <svg class="seal-blank" viewBox="0 0 132 132" aria-hidden="true">
-              <circle cx="66" cy="66" r="62" />
-              <circle cx="66" cy="66" r="30" />
-              <text x="66" y="70" text-anchor="middle">AWAITING</text>
-            </svg>
+            <.still />
             <p class="hint">Nothing inspected yet. Lure will show:</p>
             <ol>
               <li>a verdict: passes, check first, or fails inspection</li>
@@ -168,12 +180,15 @@ defmodule LureWeb.CheckLive do
               <.seal verdict={@result.verdict} />
               <div>
                 <p class="ticket num">Inspection No. {ticket(@result.text)}</p>
-                <h3>{headline(@result.verdict)}</h3>
+                <h3>
+                  <span class="fig-no" aria-hidden="true">Fig. 2 —</span> {headline(@result.verdict)}
+                </h3>
                 <p>{explain(@result)}</p>
               </div>
             </div>
             <div
               class="scale"
+              style={"--t: #{pct(@result.threshold)}%"}
               role="img"
               aria-label={"Score #{pct(@result.score)} of 100; the line is at #{pct(@result.threshold)}"}
             >
@@ -259,13 +274,14 @@ defmodule LureWeb.CheckLive do
           </p>
         </div>
       </section>
-
-      <.microprint />
-      <footer>
+    </div>
+    <footer class="water foot">
+      <.water class="hatch" />
+      <div class="wrap">
         <span>Built by Evan Wilson in Elixir, Phoenix LiveView, Nx, Axon and Bumblebee.</span>
         <span>Training data: EMSCAD, University of the Aegean (CC0).</span>
-      </footer>
-    </div>
+      </div>
+    </footer>
     """
   end
 
