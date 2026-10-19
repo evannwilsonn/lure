@@ -96,8 +96,12 @@ defmodule LureWeb.CheckLive do
         </nav>
       </header>
 
+      <.microprint />
+
       <section class="intro">
+        <.waves class="band" />
         <div>
+          <p class="form-no">Form LU-13 · Employment advertisement inspection</p>
           <h1>Is this job ad real?</h1>
           <p>
             Paste an ad and Lure scores it with a model trained on 15,872 real postings, 713 of them scams caught by a job board's staff.
@@ -147,6 +151,11 @@ defmodule LureWeb.CheckLive do
         <section class="panel" aria-labelledby="h-result" aria-live="polite">
           <h2 id="h-result">The verdict</h2>
           <div :if={is_nil(@result)} class="empty">
+            <svg class="seal-blank" viewBox="0 0 132 132" aria-hidden="true">
+              <circle cx="66" cy="66" r="62" />
+              <circle cx="66" cy="66" r="30" />
+              <text x="66" y="70" text-anchor="middle">AWAITING</text>
+            </svg>
             <p class="hint">Nothing inspected yet. Lure will show:</p>
             <ol>
               <li>a verdict: passes, check first, or fails inspection</li>
@@ -158,6 +167,7 @@ defmodule LureWeb.CheckLive do
             <div class="verdict">
               <.seal verdict={@result.verdict} />
               <div>
+                <p class="ticket num">Inspection No. {ticket(@result.text)}</p>
                 <h3>{headline(@result.verdict)}</h3>
                 <p>{explain(@result)}</p>
               </div>
@@ -190,17 +200,16 @@ defmodule LureWeb.CheckLive do
       </div>
 
       <section :if={@result} class="panel markup" aria-labelledby="h-markup">
+        <span class="specimen" aria-hidden="true">Specimen</span>
         <h2 id="h-markup">The ad, marked up</h2>
         <div class="key">
           <span><span class="w-up">&nbsp;word&nbsp;</span> pushed toward scam</span>
           <span><span class="w-down">&nbsp;word&nbsp;</span> pushed toward real</span>
           <span><span class="f-span">wavy underline</span><span class="f-num">1</span> red flag</span>
         </div>
-        <div class="text" id="marked" tabindex="0">
-          <%= for {seg, cls, flag} <- segments(@result) do %>
-            <span class={cls}>{seg}</span><sup :if={flag} class="f-num">{flag}</sup>
-          <% end %>
-        </div>
+        <%!-- One line on purpose: the text keeps its own line breaks (pre-wrap), so any
+             whitespace between these tags would show up in the ad. --%>
+        <div class="text" id="marked" tabindex="0" phx-no-format><%= for {seg, cls, flag} <- segments(@result) do %><span class={cls}>{seg}</span><sup :if={flag} class="f-num">{flag}</sup><% end %></div>
       </section>
 
       <section :if={@eval} id="how" class="ledger">
@@ -243,7 +252,7 @@ defmodule LureWeb.CheckLive do
             The terms the logistic regression weighs most toward fraud, learned from the training ads.
           </p>
           <div class="words">
-            <span :for={w <- Enum.take(@eval["top_scam_words"] || [], 18)}>{w["token"]}</span>
+            <span :for={w <- Enum.take(@eval["top_scam_words"] || [], 18)}>{readable(w["token"])}</span>
           </div>
           <p class="note">
             A score is a reason to look closer, not proof. If an ad asks for money or your bank details, stop, and report it at <a href="https://reportfraud.ftc.gov">reportfraud.ftc.gov</a>.
@@ -251,6 +260,7 @@ defmodule LureWeb.CheckLive do
         </div>
       </section>
 
+      <.microprint />
       <footer>
         <span>Built by Evan Wilson in Elixir, Phoenix LiveView, Nx, Axon and Bumblebee.</span>
         <span>Training data: EMSCAD, University of the Aegean (CC0).</span>
@@ -331,4 +341,20 @@ defmodule LureWeb.CheckLive do
       {binary_part(text, a, b - a), cls, ends_flag && elem(ends_flag, 2)}
     end)
   end
+
+  # A stable inspection number for an ad: the same text always gets the same number.
+  defp ticket(text) do
+    <<a::16, b::16, _::binary>> = :crypto.hash(:sha256, text)
+
+    "LU-" <>
+      String.pad_leading(Integer.to_string(a, 16), 4, "0") <>
+      "-" <> String.pad_leading(Integer.to_string(b, 16), 4, "0")
+  end
+
+  defp readable(token),
+    do:
+      token
+      |> String.replace("<link>", "[link]")
+      |> String.replace("<email>", "[email]")
+      |> String.replace("<phone>", "[phone]")
 end

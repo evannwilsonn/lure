@@ -23,6 +23,56 @@ defmodule LureWeb.Marks do
     |> then(&("M" <> Enum.join(&1, " L") <> " Z"))
   end
 
+  @doc """
+  A guilloché band: sine waves whose amplitude itself swells and shrinks, each one shifted a
+  little in phase, the way banknote borders are engraved.
+  """
+  attr :class, :string, default: nil
+
+  def waves(assigns) do
+    paths =
+      for i <- 0..17 do
+        phase = i / 18 * 2 * :math.pi()
+
+        pts =
+          for x <- 0..240 do
+            xx = x * 5
+            amp = 46 + 22 * :math.sin(xx / 170 + phase / 2)
+            y = 110 + amp * :math.sin(xx / 38 + phase)
+            "#{xx},#{Float.round(y, 1)}"
+          end
+
+        "M" <> Enum.join(pts, " L")
+      end
+
+    assigns = assign(assigns, paths: paths)
+
+    ~H"""
+    <svg class={@class} viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+      <path
+        :for={p <- @paths}
+        d={p}
+        fill="none"
+        stroke="currentColor"
+        stroke-width="0.6"
+        vector-effect="non-scaling-stroke"
+      />
+    </svg>
+    """
+  end
+
+  @doc "A rule of microprint: text too small to photocopy, the oldest anti-forgery trick."
+  attr :text, :string,
+    default: "LURE · EMPLOYMENT ADVERTISEMENT INSPECTION · TRAINED ON EMSCAD · BUILT IN ELIXIR · "
+
+  def microprint(assigns) do
+    assigns = assign(assigns, line: String.duplicate(assigns.text, 12))
+
+    ~H"""
+    <div class="microprint" aria-hidden="true">{@line}</div>
+    """
+  end
+
   attr :class, :string, default: nil
   attr :size, :integer, default: 160
 
