@@ -1,0 +1,227 @@
+{
+  "shipped": "tfidf_logistic",
+  "dataset": {
+    "valid": 2381,
+    "test": 2381,
+    "postings": 15872,
+    "train": 11110,
+    "scams": 713
+  },
+  "models": {
+    "always_real": {
+      "test": {
+        "precision": 0.04493910121797564,
+        "fn": 0,
+        "tp": 107,
+        "threshold": 0.0,
+        "recall": 1.0,
+        "f1": 0.0860128617363344,
+        "fp": 2274,
+        "tn": 0
+      },
+      "valid_average_precision": 0.023023876652671332,
+      "threshold": 0.0,
+      "test_average_precision": 0.023023876652671332
+    },
+    "average": {
+      "test": {
+        "precision": 0.803921568627451,
+        "fn": 25,
+        "tp": 82,
+        "threshold": 0.6567471657746133,
+        "recall": 0.7663551401869159,
+        "f1": 0.7846889952153109,
+        "fp": 20,
+        "tn": 2254
+      },
+      "valid_average_precision": 0.8316070345296841,
+      "threshold": 0.6567471657746133,
+      "test_average_precision": 0.862479648736978
+    },
+    "minilm_network": {
+      "test": {
+        "precision": 0.7373737373737373,
+        "fn": 34,
+        "tp": 73,
+        "threshold": 0.8728945851325989,
+        "recall": 0.6822429906542056,
+        "f1": 0.7087378640776699,
+        "fp": 26,
+        "tn": 2248
+      },
+      "valid_average_precision": 0.7664290375641276,
+      "threshold": 0.8728945851325989,
+      "test_average_precision": 0.7664018127043203
+    },
+    "red_flags": {
+      "test": {
+        "precision": 0.09803921568627451,
+        "fn": 97,
+        "tp": 10,
+        "threshold": 0.1111111111111111,
+        "recall": 0.09345794392523364,
+        "f1": 0.09569377990430622,
+        "fp": 92,
+        "tn": 2182
+      },
+      "valid_average_precision": 0.028650694019344457,
+      "threshold": 0.1111111111111111,
+      "test_average_precision": 0.02799386466654241
+    },
+    "tfidf_logistic": {
+      "test": {
+        "precision": 0.926829268292683,
+        "fn": 31,
+        "tp": 76,
+        "threshold": 0.6859304973588579,
+        "recall": 0.7102803738317757,
+        "f1": 0.8042328042328043,
+        "fp": 6,
+        "tn": 2268
+      },
+      "valid_average_precision": 0.8390423434556424,
+      "threshold": 0.6859304973588579,
+      "test_average_precision": 0.8887193628247985
+    }
+  },
+  "top_scam_words": [
+    {
+      "token": "link <link>",
+      "weight": 3.531
+    },
+    {
+      "token": "below link",
+      "weight": 2.997
+    },
+    {
+      "token": "data entry",
+      "weight": 2.968
+    },
+    {
+      "token": "$0",
+      "weight": 2.868
+    },
+    {
+      "token": "apply using",
+      "weight": 2.807
+    },
+    {
+      "token": "administrative",
+      "weight": 2.668
+    },
+    {
+      "token": "earn",
+      "weight": 2.576
+    },
+    {
+      "token": "link",
+      "weight": 2.494
+    },
+    {
+      "token": "customer service",
+      "weight": 2.419
+    },
+    {
+      "token": "assistant",
+      "weight": 2.406
+    },
+    {
+      "token": "entry",
+      "weight": 2.366
+    },
+    {
+      "token": "$",
+      "weight": 2.269
+    },
+    {
+      "token": "administrative assistant",
+      "weight": 2.219
+    },
+    {
+      "token": "oil and",
+      "weight": 2.094
+    },
+    {
+      "token": "gas",
+      "weight": 1.994
+    },
+    {
+      "token": "requirements 0",
+      "weight": 1.983
+    },
+    {
+      "token": "offshore",
+      "weight": 1.893
+    },
+    {
+      "token": "oil",
+      "weight": 1.862
+    },
+    {
+      "token": "call",
+      "weight": 1.819
+    },
+    {
+      "token": "no",
+      "weight": 1.814
+    },
+    {
+      "token": "clerical",
+      "weight": 1.813
+    },
+    {
+      "token": "customer",
+      "weight": 1.811
+    },
+    {
+      "token": "and gas",
+      "weight": 1.793
+    },
+    {
+      "token": "service",
+      "weight": 1.785
+    },
+    {
+      "token": "<email>",
+      "weight": 1.756
+    }
+  ],
+  "flags_on_test": {
+    "pay_to_work": {
+      "scams": 0,
+      "ads": 14
+    },
+    "off_platform": {
+      "scams": 0,
+      "ads": 11
+    },
+    "free_email": {
+      "scams": 0,
+      "ads": 0
+    },
+    "money_handling": {
+      "scams": 0,
+      "ads": 21
+    },
+    "big_earnings": {
+      "scams": 1,
+      "ads": 11
+    },
+    "sensitive_info": {
+      "scams": 1,
+      "ads": 3
+    },
+    "no_bar": {
+      "scams": 8,
+      "ads": 38
+    },
+    "home_typing": {
+      "scams": 0,
+      "ads": 0
+    },
+    "guarantee": {
+      "scams": 0,
+      "ads": 5
+    }
+  }
+}
