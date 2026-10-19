@@ -148,14 +148,14 @@ jobs:
           docker push "$AR_IMAGE:$SHA"
 
       - name: Publish to Cloud Run
-        # Keeps one instance always warm so the app never sleeps; capped so a traffic spike can't run up a bill.
+        # Scales to zero when nobody is using it; capped so a traffic spike can't run up a bill.
         env: {}
         run: |
           SHA="${GITHUB_SHA::7}"
           extra=""
           gcloud run deploy lure --image "$AR_IMAGE:$SHA" --region "$REGION" \
             --port 7860 --memory 2Gi --cpu 1 --cpu-boost \
-            --min-instances 1 --max-instances 2 --timeout 3600 \
+            --min-instances 0 --max-instances 2 --timeout 3600 \
             --allow-unauthenticated --quiet $extra
           url=$(gcloud run services describe lure --region "$REGION" --format 'value(status.url)')
           echo "Live at $url"
