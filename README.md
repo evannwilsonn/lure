@@ -4,7 +4,7 @@ Paste a job ad and Lure says whether it reads like an employment scam. It underl
 
 [![pipeline](https://github.com/evannwilsonn/lure/actions/workflows/pipeline.yml/badge.svg)](https://github.com/evannwilsonn/lure/actions/workflows/pipeline.yml)
 
-**Live demo:** a Hugging Face Space, deployed from `main` by the pipeline (see [Deployment](#7-deployment)).
+**Live demo:** on Google Cloud Run, deployed from `main` by the pipeline (see [Deployment](#7-deployment)).
 
 Project 13a of my AI project roadmap, the capstone, built three times in a language I hadn't used before. The other two are [Recall](https://github.com/evannwilsonn/recall) and [Squiggle](https://github.com/evannwilsonn/squiggle).
 
@@ -73,12 +73,12 @@ At its threshold, the shipped model catches 76 of the 107 scams and wrongly flag
 ```
 push to main ─► check: format, compile --warnings-as-errors, mix test
               └► image: docker build ─► smoke test on :7860 (page + framing header) ─► ghcr.io/evannwilsonn/lure
-                                                                                     └► Hugging Face Space
+                                                                                     └► Google Cloud Run
 ```
 
-- **Container:** a Phoenix release on Debian slim, running as uid 1000 on port 7860, the way Hugging Face Spaces runs Docker apps. MiniLM's weights are downloaded at build time and the app runs with `BUMBLEBEE_OFFLINE=true`. With no `SECRET_KEY_BASE` set it makes a random one per boot; there are no accounts or sessions to lose.
-- **Space:** the pipeline's last job pushes a one-line Dockerfile (`FROM ghcr.io/evannwilsonn/lure:<commit>`) and the Space card to the Space, which restarts on the new image. It runs once the repo has a variable `HF_SPACE` (like `name/lure`) and a secret `HF_TOKEN` (a write token), and it needs the GHCR package to be public.
-- **Framing:** Hugging Face shows Spaces inside an iframe, so the app sends `frame-ancestors 'self' https://huggingface.co` and no `X-Frame-Options`. The smoke test checks both.
+- **Container:** a Phoenix release on Debian slim, running as uid 1000 on port 7860, the port the pipeline's smoke test and Cloud Run use. MiniLM's weights are downloaded at build time and the app runs with `BUMBLEBEE_OFFLINE=true`. With no `SECRET_KEY_BASE` set it makes a random one per boot; there are no accounts or sessions to lose.
+- **Cloud Run:** the pipeline's last job copies this commit's tested image from GHCR to Google's registry and deploys it to Cloud Run in us-east1, with 2 GB of memory and up to 2 instances. It scales to zero when nobody's using it. It logs in to Google through workload identity, so no key is stored anywhere; the one-time setup is `cloudrun-setup.sh` in [Conveyor](https://github.com/evannwilsonn/conveyor), and the job runs once the repo has the variables it prints. Hugging Face Spaces was the first plan, but Docker Spaces now need a paid account.
+- **Framing:** the app may be embedded by itself and by huggingface.co (`frame-ancestors`), and sends no `X-Frame-Options`. The smoke test checks both.
 - **Pipeline board:** the run shows up on [Conveyor](https://evannwilsonn.github.io/conveyor/) with the other projects.
 
 ## Reproducing the numbers
